@@ -1,0 +1,49 @@
+{% spaceless %}
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Django User Login Template">
+    <meta name="author" content="Remisson dos Santos Silva">
+    <title>Django Create User Template</title>
+    <link href="{% static 'bootstrap-4.0.0/dist/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'bootstrap-4.0.0/docs/4.0/examples/sign-in/signin.css' %}" rel="stylesheet">
+  </head>
+  <body class="text-center">
+    <div>
+      <form class="form-signin" method="POST" action="{% url 'create_account' %}">
+        {% csrf_token %}
+        <h1 class="h3 mb-3 font-weight-normal">Account creation form</h1>
+
+        <label for="id_email" class="sr-only">Email address</label>
+        <input type="email" maxlength="320" name="email" id="id_email" class="form-control" placeholder="Email address" required autofocus>
+
+        <label for="id_username" class="sr-only">Username</label>
+        <input type="textfield" maxlength="50" name="username" id="id_username" class="form-control" placeholder="Username" required>
+
+        <label for="id_password" class="sr-only">Password</label>
+        <input type="password" id="id_password" name="password" class="form-control" placeholder="Password" required>
+
+        <label for="id_retry_password" class="sr-only">Re-try Password</label>
+        <input type="password" id="id_retry_password" name="retry_password" class="form-control" placeholder="Re-enter your password" required>
+
+        <p>
+          <a href="{% url 'login' %}">Sign in</a>
+        </p>
+
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Save</button>
+      </form>
+    </div>
+    <div>
+    {% for mss in form.non_field_errors %}
+      <div class="alert alert-danger" role="alert">
+        {{mss}}
+      </div>
+    {% endfor %}
+    </div>
+
+  </body>
+</html>
+{% endspaceless %}
