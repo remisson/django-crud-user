@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 import logging
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
 from django.core.exceptions import ValidationError
@@ -9,14 +10,14 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login as django_login, logout as django_logout
 
-from .forms import UserLoginForm, UserCreateForm
+from .forms import UserLoginForm, UserCreateForm, UserEditForm
+######################################################################################
+# @author Remisson dos Santos Silva
+# @since 14/08/2026
+######################################################################################
 
 def index(request):
 	return HttpResponse(loader.get_template("core/login.html").render({}, request))
-
-@login_required
-def home(request):
-	return HttpResponse(loader.get_template("core/home.html").render({}, request))
 
 def login(request):
 	if request.method == 'POST':
@@ -83,3 +84,40 @@ def create_account(request):
 		form = UserCreateForm()
 
 	return render(request, 'core/create_account.html', {'form': form})
+
+@login_required
+def home(request):
+	return HttpResponse(loader.get_template("core/home.html").render({}, request))
+
+@login_required
+def edit_account(request, pk):
+	user = get_object_or_404(User, pk=pk)
+
+	if request.method == 'POST':
+
+		form = UserEditForm(request.POST, instance=user)
+
+		if form.is_valid():
+			form.save()
+			logging.info('[edit_account] SUCCESS: {}'.format(user.username))
+			return redirect('home')
+	else:
+		form = UserEditForm(instance=user)
+
+	return render(request, 'core/edit_account.html', {'form': form})
+
+@login_required
+def delete_account(request, pk):
+	user = get_object_or_404(User, pk=pk)
+	try:
+		username = user.username
+		django_logout(request)
+		request.session.flush()
+		user.delete()
+		logging.info('[delete_account] USER: {}'.format(username))
+		messages.add_message(request, messages.INFO, '[SUCCESS] the user has been deleted')
+		return redirect('index')
+	except Exception as e:
+		logging.exception('[delete_account] ERROR: {}'.format(e))
+		messages.add_message(request, messages.ERROR, '[ERROR] An internal error has occurred')
+	return index(request=request)

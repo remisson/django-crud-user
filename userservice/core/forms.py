@@ -1,9 +1,13 @@
+# -*- coding: utf-8 -*-
 from django import forms
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 from django.db.models import Q
-
+######################################################################################
+# @author Remisson dos Santos Silva
+# @since 14/08/2026
+######################################################################################
 class UserLoginForm(forms.Form):
 	email = forms.EmailField()
 	password = forms.CharField(widget=forms.PasswordInput)
@@ -71,5 +75,33 @@ class UserCreateForm(forms.Form):
 
 		elif User.objects.filter(Q(username__exact=username) | Q(email__exact=email)).exists():
 			raise ValidationError("The user already exists")
+
+		return cleaned_data
+
+class UserEditForm(forms.ModelForm):
+	class Meta:
+		model = User
+		fields = ['username', 'email']
+
+	def clean(self):
+		cleaned_data = super().clean()
+
+		username = cleaned_data.get("username")
+		email = cleaned_data.get("email")
+
+		if not username:
+			raise ValidationError("The username is required")
+
+		elif len(username) > 50:
+			raise ValidationError("The username must be up to 50 characters long")
+
+		elif not email:
+			raise ValidationError("The email is required")
+
+		elif not '@' in email or (len(email) < 4 or len(email) > 320):
+			raise ValidationError("The email is invalid")
+
+		elif not User.objects.filter(Q(username__exact=username) | Q(email__exact=email)).exists():
+			raise ValidationError("User not found")
 
 		return cleaned_data

@@ -1,7 +1,11 @@
+# -*- coding: utf-8 -*-
 import os
 
 from pathlib import Path
-
+######################################################################################
+# @author Remisson dos Santos Silva
+# @since 14/08/2026
+######################################################################################
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'CHANGEIT'
@@ -70,6 +74,10 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+LOGIN_REDIRECT_URL = '/login/'
+
+LOGIN_URL = '/login/'
 
 LANGUAGE_CODE = 'en-us'
 

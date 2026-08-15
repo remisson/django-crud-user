@@ -19,6 +19,8 @@
             <th scope="col">Username</th>
             <th scope="col">email</th>
             <th scope="col"></th>
+            <th scope="col"></th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -26,7 +28,13 @@
             <td>{{user.username}}</td>
             <td>{{user.email}}</td>
             <td>
-              <a class="btn btn-sm btn-primary btn-block" href="{% url 'logout' %}">Logout</a>              
+              <a class="btn btn-sm btn-primary btn-block" href="{% url 'edit_account' pk=user.id %}">Edit</a>
+            </td>
+            <td>
+              <a class="btn btn-sm btn-secondary btn-block" href="{% url 'delete_account' pk=user.id %}">Delete</a>
+            </td>
+            <td>
+              <a class="btn btn-sm btn-secondary btn-block" href="{% url 'logout' %}">Logout</a>
             </td>
           </tr>
         </tbody>
