@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: userservice
+spec:
+  containers:
+  - name: userservice
+    image: userservice:latest
+    ports:
+    - containerPort: 5000
