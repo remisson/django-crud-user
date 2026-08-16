@@ -1,0 +1,34 @@
+version: '3.8'
+services:
+  api:
+    build: ./userservice
+    ports:
+      - "5000:5000"
+    depends_on:
+      - db
+    env_file:
+      - userservice-db.env
+  db:
+    image: mysql:8.4.11
+    secrets:
+      - mysql_root_password
+      - mysql_database
+      - mysql_user
+      - mysql_password
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+      MYSQL_DATABASE_FILE: /run/secrets/mysql_database
+      MYSQL_USER_FILE: /run/secrets/mysql_user
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
+    ports:
+      - "3306:3306"
+
+secrets:
+  mysql_root_password:
+    external: true
+  mysql_database:
+    external: true
+  mysql_user:
+    external: true
+  mysql_password:
+    external: true
