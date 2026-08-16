@@ -18,7 +18,7 @@ Developed by: Remisson dos Santos Silva (www.github.com/remisson/)
 
 The first step is the docker configuration. We're gonna build the container to install app requirements and run the service. Assuming you're on the app base path (e.g /home/remisson/django--6-1-crud-user-bootstrap-mysql/), follow the instructions:
 
-- Build all docker configurations by docker-compose:
+Build all docker configurations by docker-compose:
 
 1. Run the docker compose command
 
@@ -45,7 +45,7 @@ kubectl apply -f /k8s/userservice-db-deployment.yml
 kubectl apply -f /k8s/userservice-api-service.yml
 ```
 
-- Build only the app container:
+Build only the app container:
 
 1. Build docker container app
 
@@ -65,9 +65,9 @@ docker run -p 5000:5000 userservice
 kubectl apply -f /k8s/userservice.yml
 ```
 
-- Configure the sensitive data files for application, docker and kubernetes, using swarm mode:
+Configure the sensitive data files for application, docker and kubernetes, using swarm mode:
 
-Docker compose
+- Docker compose
 
 1. Run the follow commands, replacing the first params with the correct data:
 ```
@@ -89,7 +89,7 @@ docker service ls
 docker secret ls
 ```
 
-Kubernetes
+- Kubernetes
 
 1. Run the follow commands, replacing the first params with the correct data:
 ```
