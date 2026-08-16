@@ -22,7 +22,9 @@ The first step is the docker configuration. We're gonna build the container to i
 
 1. Run the docker compose command
 
-```docker-compose up --build```
+```
+docker-compose up --build
+```
 
 2. Run kubernetes configuration
 
@@ -47,15 +49,21 @@ kubectl apply -f /k8s/userservice-api-service.yml
 
 1. Build docker container app
 
-```docker build -t userservice .```
+```
+docker build -t userservice .
+```
 
 2. Run container app
 
-```docker run -p 5000:5000 userservice```
+```
+docker run -p 5000:5000 userservice
+```
 
 3. Run kubernetes configuration
 
-```kubectl apply -f /k8s/userservice.yml```
+```
+kubectl apply -f /k8s/userservice.yml
+```
 
 - Configure the sensitive data files for application, docker and kubernetes, using swarm mode:
 
