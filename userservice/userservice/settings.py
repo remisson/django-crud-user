@@ -102,8 +102,6 @@ MAILERS = {
     },
 }
 
-LOG_ROOT = 'log/'
-
 LOGGING = { 
     'version': 1,
     'disable_existing_loggers': False,
@@ -117,24 +115,16 @@ LOGGING = {
         },
     },
     'handlers': {
-        'file': {
+        'console': {
             'level': 'INFO',
-            'class': 'logging.handlers.TimedRotatingFileHandler',
-            'filename': '{}userservice.log'.format(LOG_ROOT),
-            'when': 'D',
-            'interval': 1,
-            'backupCount': 90,
+            'class': 'logging.StreamHandler',
             'formatter': 'verbose',
         },
     },
     'loggers': {
         'django': {
-            'handlers': ['file'],
+            'handlers': ['console'],
             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
         },
-        '': {
-            'handlers': ['file'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-        }
-    },
+    }
 }

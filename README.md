@@ -8,90 +8,53 @@ Developed by: Remisson dos Santos Silva (www.github.com/remisson/)
 
 > Python 3.12.3
 
-> Django 6.1
+> Django 5.2.17
 
 > Bootstrap 4.0
 
 > Mysql 8.4.11
 
-# Build and Configuration
+# Build application with Docker Swarm
 
-The first step is the docker configuration. We're gonna build the container to install app requirements and run the service. Assuming you're on the app base path (e.g /home/remisson/django--6-1-crud-user-bootstrap-mysql/), follow the instructions:
+Assuming you're on the app base path (e.g /home/remisson/django-crud-user-bootstrap-mysql/), follow the instructions:
 
-Build all docker configurations by docker-compose:
-
-1. Run the docker compose command
-
+1. Initializing docker swarm:
 ```
-docker-compose up --build
+docker swarm init
 ```
 
-2. Run kubernetes configuration
+2. Set secret params:
 
-(Persistent option)
-```
-kubectl apply -f /k8s/userservice-api-deployment.yml
-kubectl apply -f /k8s/userservice-mysql-pv.yml
-kubectl apply -f /k8s/userservice-mysql-pvc.yml
-kubectl apply -f /k8s/userservice-db-deployment-persistent.yml
-kubectl apply -f /k8s/userservice-mysql-backup-cronjob.yml
-kubectl apply -f /k8s/userservice-api-service.yml
-```
-
-(Non-persistent option)
-```
-kubectl apply -f /k8s/userservice-api-deployment.yml
-kubectl apply -f /k8s/userservice-db-deployment.yml
-kubectl apply -f /k8s/userservice-api-service.yml
-```
-
-Build only the app container:
-
-1. Build docker container app
-
-```
-docker build -t userservice .
-```
-
-2. Run container app
-
-```
-docker run -p 5000:5000 userservice
-```
-
-3. Run kubernetes configuration
-
-```
-kubectl apply -f /k8s/userservice.yml
-```
-
-Configure the sensitive data files for application, docker and kubernetes, using swarm mode:
-
-- Docker compose
-
-1. Run the follow commands, replacing the first params with the correct data:
 ```
 echo "root_password" | docker secret create mysql_root_password -
 echo "database_name" | docker secret create mysql_database -
 echo "user" | docker secret create mysql_user -
 echo "password" | docker secret create mysql_password -
+```
 
+3. Check the created secrets:
+```
 docker secret ls
 ```
 
-2. Run deployment commands:
-
+4. Set up docker compose:
 ```
-docker swarm init
-docker stack deploy -c docker-compose.yml userservice
-
-docker service ls
-docker secret ls
+docker stack deploy -c docker-compose.yml userservice_stack
 ```
 
-- Kubernetes
+# Build application with Kubernetes
 
-1. Run the follow commands, replacing the first params with the correct data:
+Assuming you're on the app base path (e.g /home/remisson/django-crud-user-bootstrap-mysql/), follow the instructions:
+
+1. Start minikube and verify the status and test the connection
+```
+minikube start
+minikube status
+
+kubectl get nodes
+```
+
+2. Run the follow commands, replacing the first params with the correct data:
 ```
 kubectl create secret generic mysql-secret \
   --from-literal=MYSQL_ROOT_PASSWORD=root_password \
@@ -101,4 +64,36 @@ kubectl create secret generic mysql-secret \
 
 kubectl get secrets
 kubectl describe secret mysql-secret
+```
+
+3. Build docker container
+```
+eval $(minikube docker-env)
+docker build -t userservice:latest .
+```
+
+4. Apply manifests:
+```
+kubectl apply -f /k8s/userservice-mysql-pv.yml
+kubectl apply -f /k8s/userservice-mysql-pvc.yml
+kubectl apply -f /k8s/userservice-db-deployment-persistent.yml
+kubectl apply -f /k8s/userservice-mysql-service.yml
+kubectl apply -f /k8s/userservice-api-deployment.yml
+kubectl apply -f /k8s/userservice-api-service.yml
+kubectl apply -f /k8s/userservice-web-deployment.yml
+kubectl apply -f /k8s/userservice-web-service.yml
+```
+
+5. Accessing the services:
+```
+minikube service userservice-web-service
+minikube service userservice-api-service
+```
+
+# Logger
+
+Run the follow command to check the application logging out:
+
+```
+docker logs userservice_container
 ```
