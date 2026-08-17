@@ -1,22 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: userservice-api-deployment
+  name: userservice-web-deployment
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: api
+      app: web
   template:
     metadata:
       labels:
-        app: api
+        app: web
     spec:
       containers:
-      - name: userservice
+      - name: userservice-web
         image: userservice:latest
+        command: ["python", "userservice/manage.py", "runserver", "0.0.0.0:8000"]
         ports:
-        - containerPort: 5000
+        - containerPort: 8000
         env:
         - name: DB_HOST
           value: mysql-service
