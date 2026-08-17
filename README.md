@@ -74,7 +74,6 @@ docker build -t userservice:latest .
 
 4. Apply manifests:
 ```
-kubectl apply -f /k8s/userservice-mysql-secret.yml
 kubectl apply -f /k8s/userservice-mysql-pv.yml
 kubectl apply -f /k8s/userservice-mysql-pvc.yml
 kubectl apply -f /k8s/userservice-db-deployment-persistent.yml
