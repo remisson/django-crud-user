@@ -1,7 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: userservice-web-deployment
+  name: userservice-web
+  labels:
+    app: web
 spec:
   replicas: 2
   selector:
@@ -14,7 +16,8 @@ spec:
     spec:
       containers:
       - name: userservice-web
-        image: userservice:latest
+        image: userservice-web:latest
+        imagePullPolicy: IfNotPresent
         command: ["python", "userservice/manage.py", "runserver", "0.0.0.0:8000"]
         ports:
         - containerPort: 8000
