@@ -10,12 +10,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'CHANGEIT'
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
-    'core',
+    'userservice.core',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
