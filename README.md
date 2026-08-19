@@ -14,6 +14,10 @@ Developed by: Remisson dos Santos Silva (www.github.com/remisson/)
 
 > Mysql 8.4.11
 
+> Gunicorn 20.0.4
+
+> Nginx 1.24.0
+
 > Docker 29.7.2
 
 > Kubernetes (Client Version: v1.36.3 | Kustomize Version: v5.8.1)
@@ -51,8 +55,10 @@ docker stack deploy -c docker-compose.yml userservice_stack
 Assuming you're on the app base path (e.g /home/remisson/django-crud-user-bootstrap-mysql/), follow the instructions:
 
 # 1. Start minikube with docker driver
+```
 minikube start --driver=docker
 minikube status
+```
 
 # 2. Verify nodes
 ```
@@ -93,16 +99,19 @@ kubectl logs deployment/userservice-db-deployment
 minikube image build -t userservice-web:latest .
 ```
 
-build with docker and load with minikube
+# 7. Apply web manifests
+
+Homologation
 ```
-docker build -t userservice-web:latest .
-minikube image load userservice-web:latest
+kubectl apply -f k8s/userservice-web-deployment-homolog.yml
+kubectl apply -f k8s/userservice-web-service-homolog.yml
 ```
 
-# 7. Apply web manifests
+Production
 ```
-kubectl apply -f k8s/userservice-web-deployment.yml
-kubectl apply -f k8s/userservice-web-service.yml
+kubectl apply -f k8s/userservice-nginx-config.yml
+kubectl apply -f k8s/userservice-web-deployment-prod.yml
+kubectl apply -f k8s/userservice-web-service-prod.yml
 ```
 
 # 8. Check if everything works
@@ -131,9 +140,4 @@ e.g http://192.168.49.2:32571/
 Application log
 ```
 kubectl logs deployment/userservice-web
-```
-
-Docker log
-```
-docker logs userservice_container
 ```

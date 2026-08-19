@@ -15,10 +15,15 @@ spec:
         app: web
     spec:
       containers:
-      - name: userservice-web
+      - name: web
         image: userservice-web:latest
         imagePullPolicy: IfNotPresent
-        command: ["python", "userservice/manage.py", "runserver", "0.0.0.0:8000"]
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            python userservice/manage.py makemigrations &&
+            python userservice/manage.py migrate &&
+            gunicorn --workers 3 --timeout 120 --bind 0.0.0.0:8000 userservice.wsgi:application
         ports:
         - containerPort: 8000
         env:
@@ -39,3 +44,18 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: MYSQL_PASSWORD
+        - name: DB_PORT
+          value: "3306"
+
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
+
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
