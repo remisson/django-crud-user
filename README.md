@@ -131,8 +131,10 @@ minikube ip
 ```
 
 # 10. Access the application
+
+e.g.:
 ```
-e.g http://192.168.49.2:32571/
+http://192.168.49.2:32571/
 ```
 
 # Logger

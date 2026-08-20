@@ -14,6 +14,12 @@ spec:
       labels:
         app: web
     spec:
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: nginx-config
+      - name: staticfiles
+        emptyDir: {}
       containers:
       - name: web
         image: userservice-web:latest
@@ -21,8 +27,9 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            python userservice/manage.py makemigrations &&
-            python userservice/manage.py migrate &&
+            python /app/manage.py makemigrations &&
+            python /app/manage.py migrate &&
+            python /app/manage.py collectstatic --noinput &&
             gunicorn --workers 3 --timeout 120 --bind 0.0.0.0:8000 userservice.wsgi:application
         ports:
         - containerPort: 8000
@@ -46,6 +53,9 @@ spec:
               key: MYSQL_PASSWORD
         - name: DB_PORT
           value: "3306"
+        volumeMounts:
+        - name: staticfiles
+          mountPath: /app/staticfiles
 
       - name: nginx
         image: nginx:latest
@@ -54,8 +64,5 @@ spec:
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/conf.d
-
-      volumes:
-      - name: nginx-config
-        configMap:
-          name: nginx-config
+        - name: staticfiles
+          mountPath: /app/staticfiles

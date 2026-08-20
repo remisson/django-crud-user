@@ -10,7 +10,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'CHANGEIT'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -91,7 +91,17 @@ USE_I18N = True
 
 USE_TZ = True
 
-STATIC_URL = 'static/'
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:30080",
+    "http://127.0.0.1:30080",
+    "http://192.168.49.2:32571",  # IP + porta do Minikube
+    "http://userservice.local",   # se usar ingress/domínio
+]
+
+STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
