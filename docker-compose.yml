@@ -2,19 +2,27 @@ version: '3.8'
 services:
   web:
     build: .
-    command: python userservice/manage.py runserver 0.0.0.0:8000
+    command: >
+      sh -c "
+        python manage.py makemigrations &&
+        python manage.py migrate &&
+        gunicorn --workers 3 --timeout 120 --bind 0.0.0.0:8000 userservice.wsgi:application
+      "
     volumes:
-      - .:/userservice
+      - .:/src
+    working_dir: /src
     ports:
       - "8000:8000"
     depends_on:
       - db
+
   api:
-    build: ./userservice
+    build: ./src
     ports:
       - "5000:5000"
     depends_on:
       - db
+
   db:
     image: mysql:8.4.11
     secrets:
@@ -29,6 +37,7 @@ services:
       MYSQL_PASSWORD_FILE: /run/secrets/mysql_password
     ports:
       - "3306:3306"
+
 secrets:
   mysql_root_password:
     external: true

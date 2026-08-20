@@ -21,9 +21,9 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            python userservice/manage.py makemigrations &&
-            python userservice/manage.py migrate &&
-            python userservice/manage.py runserver 0.0.0.0:8000
+            python manage.py makemigrations &&
+            python manage.py migrate &&
+            python manage.py runserver 0.0.0.0:8000
         ports:
         - containerPort: 8000
         env:
